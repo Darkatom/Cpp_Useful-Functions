@@ -57,11 +57,10 @@ static int mixNumbers( int P, int Q, int bits, int times ) {
 		This subvector is added to R, the result. And so on as many times
 		as "times" value.
 
-
-		- If times > bits, -1 will be returned.
+		- If times > bits, bits == 0 or times <= 1, NULL will be returned.
 	*/
 
-	if (times > bits) return -1;
+	if ( (bits == 0) || (times <= 1) || (times > bits) ) return NULL;
 
 	vector<int> P_bin = Int2Binary( P, bits );		// Holds P's binary value
 	vector<int> Q_bin = Int2Binary( Q, bits );		// Holds Q's binary value
@@ -101,33 +100,56 @@ int main(int argc, char* argv[]) {
 
 	srand(time(NULL));	// Must be called once in order to get true semi-random mixes.
 
-	int N = 24;
-	vector<int> binary = Int2Binary(N, 8);
-	int result = Binary2Int( Int2Binary( N, 8 ));
-
-	printf("N: %d - Binary:", N); printVector( binary );
-	printf("Back to Int -> %d\n", Binary2Int( binary ));
-	printf("\n");
+	int P, Q, R, times, bits, mix;
 	
-	int times = 5;
-	int bits = 8;
-	int mix1 = mixNumbers(N, N, bits, times);
-	int mix2 = mixNumbers(N, N, bits, times);
-	int mix3 = mixNumbers(N, N, bits, times);
-	int mix4 = mixNumbers(N, N, bits, times);
-	int mix5 = mixNumbers(N, N, bits, times);
+	printf("========================================================================\n\n");
+	printf("Testing Int2Binary. REMEMBER! Binary values will be displayed reversed:\n");
+	printf("N = 5 \t  4 bits:  "); printVector( Int2Binary(5, 4) );
+	printf("N = 6 \t  8 bits:  "); printVector( Int2Binary(6, 8) );
+	printf("N = 7 \t 16 bits:  "); printVector( Int2Binary(7, 16) );
+	printf("N = 8 \t 32 bits:  "); printVector( Int2Binary(8, 32) );	
+	printf("\n========================================================================\n\n");
+	printf("Testing Binary2Int:\n");
+	printf("N = 5 \t  4 bits: %d\n", Binary2Int(Int2Binary(5, 4)) ); 
+	printf("N = 6 \t  8 bits: %d\n", Binary2Int(Int2Binary(6, 8)) );
+	printf("N = 7 \t 16 bits: %d\n", Binary2Int(Int2Binary(7, 16)) ); 
+	printf("N = 8 \t 32 bits: %d\n", Binary2Int(Int2Binary(8, 32)) ); 
+	printf("\n========================================================================\n");
+	printf("========================================================================\n\n");
+	P = 9;
+	Q = 18;
+	printf("Mixing numbers %d and %d:\n\n", P, Q);
+	printf("-> ERROR inputs:\n");
 
-	printf("N: %d\n - Mix 1: %d\n", N, mix1);
-	printf("Binary of mix: "); printVector( Int2Binary(mix1, bits) );
-	printf("\n - Mix 2: %d\n", mix2);
-	printf("Binary of mix: "); printVector( Int2Binary(mix2, bits) );
-	printf("\n - Mix 3: %d\n", mix3);
-	printf("Binary of mix: "); printVector( Int2Binary(mix3, bits) );
-	printf("\n - Mix 4: %d\n", mix4);
-	printf("Binary of mix: "); printVector( Int2Binary(mix4, bits) );
-	printf("\n - Mix 5: %d\n", mix5);
-	printf("Binary of mix: "); printVector( Int2Binary(mix5, bits) );
+	bits = 0;	times = 1;		mix = mixNumbers(P, Q, bits, times);
+	printf("%d bits, %d times: %d\n", bits, times, mix);
 
+	bits = 1;	times = 0;		mix = mixNumbers(P, Q, bits, times);
+	printf("%d bits, %d times: %d\n", bits, times, mix);
+
+	bits = 4;	times = 5;		mix = mixNumbers(P, Q, bits, times);
+	printf("%d bits, %d times: %d\n", bits, times, mix);
+
+	bits = 1;	times = 1;		mix = mixNumbers(P, Q, bits, times);
+	printf("%d bits, %d times: %d\n", bits, times, mix);
+
+
+	int testBits[5] = {4, 8, 16, 32, 64};
+
+	for ( int i = 0; i < 5; i++ ) {
+		bits = testBits[i];
+		printf("\n-> %d bits:\n", bits);
+
+		for ( int j = 0; j < 4; j++ ) {
+			times = (testBits[i]/4) + j;
+			mix = mixNumbers(P, Q, bits, times);
+			printf("%d bits, %d times: %d\n", bits, times, mix);
+		}
+	}
+
+	printf("========================================================================\n");
+
+	
 	getchar();
 
 }
